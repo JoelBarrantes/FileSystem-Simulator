@@ -26,7 +26,7 @@ public final class CmdParser {
     String cmd = args.get(0);
     
     switch (cmd.toLowerCase()) {
-      case "crt":
+      case "crt": //CREATE VIRTUAL DISK
         
         this.init = true;
         int num_sectors = Integer.parseInt(args.get(1));
@@ -37,46 +37,48 @@ public final class CmdParser {
         
         break;
       
-      case "fle":
+      case "fle": //CREATE FILE
         
         String[] name_ext = args.get(1).split("\\.");
         String content = args.get(2);
+        this.file_system.FLE(name_ext[0], name_ext[1], content);
         
         break;
       
-      case "mkdir":
+      case "mkdir": //CREATE FOLDER
         
         String name_folder = args.get(1);
         this.file_system.MKDIR(name_folder);
         break;
         
-      case "chdir":
+      case "chdir": //MOVE TO ANOTHER FOLDER
         
         String path = args.get(1);
         this.file_system.CHDIR(path);
         
         break;
         
-      case "ldir":
+      case "ldir": //LIST ALL FOLDERS AND FILES
         
-        //TODO implementation
-        
+        this.file_system.LDIR();
         break;
       
-      case "mfle":
+      case "mfle": //MODIFY FILE CONTENT
         
         //TODO implementation
         
         break;
-      case "ppt":
         
-        //TODO implementation
+      case "ppt": //PROPERTIES OF FILE
+        String[] file_ppt = args.get(1).split("\\.");
+        this.file_system.PPT(file_ppt[0], file_ppt[1]);
            
         break;
       
       case "view":
       
-        //TODO implementation
+        String[] file_view = args.get(1).split("\\.");
+        this.file_system.VIEW(file_view[0], file_view[1]);
         
         break;
       case "cpy":

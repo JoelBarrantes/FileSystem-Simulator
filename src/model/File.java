@@ -1,4 +1,6 @@
 package model;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class File {
@@ -16,6 +18,7 @@ public class File {
     this.setContent(content);
     this.setCreation_date(new Date());
     this.setModification_date(new Date());
+    this.size=0;
    
   }
 
@@ -65,6 +68,25 @@ public class File {
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  public String getProperties() {
+    // TODO Auto-generated method stub
+    String builder = "";
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    
+    builder += "Name: "+this.getName()+"\n"+
+               "Extension"+this.getExtension()+"\n"+
+
+               "Creation Date"+df.format(this.creation_date)+"\n"+
+
+               "Last Modified Date"+df.format(this.modification_date)+"\n"+
+
+               "Size (In bytes)"+String.valueOf(this.size)+"\n";
+
+    
+    
+    return builder;
   }
   
   

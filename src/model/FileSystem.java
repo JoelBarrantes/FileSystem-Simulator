@@ -49,7 +49,7 @@ public class FileSystem {
   }
   
   public void CHDIR(String name) {
-    if (name == "..") {
+    if (name.equals("..")) {
       if (current_folder.getLevel() > 0) {
         this.current_folder = current_folder.getParent();
       }
@@ -61,5 +61,33 @@ public class FileSystem {
       }
     }
     
+  }
+  
+  public void LDIR() {
+    System.out.println("Folder(s):");
+    for(Folder folder : this.current_folder.getFolders()) {
+      System.out.println(folder.getName());
+    }
+    System.out.println("");
+    System.out.println("File(s):");
+    for(File file : this.current_folder.getFiles()) {
+      System.out.println(file.getName()+"."+file.getExtension());
+    }
+    System.out.println("");
+  }
+
+  public void PPT(String file_name, String extension) {
+    String output = current_folder.PPT(file_name, extension);
+    System.out.println(output);
+  }
+
+  public void FLE(String file_name, String extension, String content) {
+    this.current_folder.FLE(file_name, extension, content);
+    
+  }
+
+  public void VIEW(String file_name, String extension) {
+    String output = this.current_folder.VIEW(file_name,extension);
+    System.out.println(output);
   }
 }

@@ -33,6 +33,19 @@ public class Folder {
     this.folders.add(new Folder(name, this.level+1 ,this));
   }
   
+  public void FLE(String file_name, String extension, String content) {
+    this.files.add(new File(file_name, extension, content));
+  }
+  
+  public String PPT(String file_name, String file_extension) {
+    for(File file : this.getFiles()) {
+      if (file.getName().equals(file_name) && file.getExtension().equals(file_extension)){
+        return file.getProperties();
+      }
+    }
+    return "File doesn't exists";
+  }
+  
   public Folder findFolder(String name) {
     for(Folder folder : folders) {
       if (folder.getName().equals(name)) {
@@ -109,6 +122,15 @@ public class Folder {
       this.path = this.name;
     }
     
+  }
+
+  public String VIEW(String file_name, String extension) {
+    for(File file : this.getFiles()) {
+      if (file.getName().equals(file_name) && file.getExtension().equals(extension)){
+        return file.getContent();
+      }
+    }
+    return "File doesn't exists";
   }
    
 
