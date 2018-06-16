@@ -22,8 +22,11 @@ public class CommandPrompt {
   
   private void initLoop() {
     
-    while(instruction.toLowerCase()!= "exit") {
+    while(true) {
       getInstruction();
+      if(instruction.toLowerCase().equals("exit")) {
+        break; 
+      }
       parseInstruction(); 
     }
     

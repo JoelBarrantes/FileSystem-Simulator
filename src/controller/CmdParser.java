@@ -90,12 +90,23 @@ public final class CmdParser {
       case "mov":
         break;
       case "rem":
+        try {
+          String[] file_rem = args.get(1).split("\\.");
+          this.file_system.REM(file_rem[0], file_rem[1]);
+        
+        } catch (Exception e){
+          String file_rem = args.get(1);
+          this.file_system.REM(file_rem, "folder");
+        }
         break;
       case "tree":
         break;
-      case "find":     
+      case "find":
+        break;
+
     }
     this.current_folder = file_system.getCurrent_folder().getPath();
+    this.file_system.getCurrent_disk().updateDisk();
     System.out.println(this.current_folder);
   }
   

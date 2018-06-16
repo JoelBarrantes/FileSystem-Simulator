@@ -10,11 +10,13 @@ import java.util.Random;
 public class FileSystem {
 
   private List<Disk> disks;
+  private Disk current_disk;
   private Folder current_folder;
   
   public FileSystem() {
     
     this.disks = new ArrayList<Disk>();
+
   }
   
   private boolean diskAlreadyExists(String name) {
@@ -41,6 +43,7 @@ public class FileSystem {
     } else {
       this.disks.add(new Disk(num_sectors, sector_size, root_name));
       this.setCurrent_folder(disks.get(disks.size()-1).getRoot());
+      this.setCurrent_disk(disks.get(disks.size()-1));
     }
   }
   
@@ -90,4 +93,19 @@ public class FileSystem {
     String output = this.current_folder.VIEW(file_name,extension);
     System.out.println(output);
   }
+
+
+  public void REM(String file_name, String extension) {
+    this.current_folder.REM(file_name, extension, this.current_folder);
+    
+  }
+    
+  public Disk getCurrent_disk() {
+    return current_disk;
+  }
+
+  public void setCurrent_disk(Disk current_disk) {
+    this.current_disk = current_disk;
+  }
+
 }
