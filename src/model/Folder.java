@@ -48,7 +48,7 @@ public class Folder {
         this.MERGE(collision, folder);
         System.out.println("Folder created.");
       } else {
-        System.out.println("File couldn't be created.");
+        System.out.println("Folder couldn't be created.");
       }     
     } else {
       this.folders.add(folder);
@@ -80,10 +80,11 @@ public class Folder {
         String cmd = reader.nextLine();
         if(cmd.toLowerCase().equals("y")) {
           this.REM(file_name, extension, this);
-          new_file = new File(file_name, extension, content, parent_disk, this);
+          //new_file = new File(file_name, extension, content, parent_disk, this);
           this.files.add(new_file); 
           System.out.println("File created.");
         } else {
+          new_file.REM();
           System.out.println("File couldn't be created.");
         }   
       } else {
@@ -91,7 +92,7 @@ public class Folder {
         System.out.println("File created.");
       }
     } else {
-      System.out.println("File couldn't be created.");
+      System.out.println("There is not enough available disk space.");
     }
   }
   
@@ -279,5 +280,8 @@ public class Folder {
   public void updateDate() {
     this.setModification_date(new Date());
   }
-
+  
+  public void updateLevel() {
+    this.setLevel(this.parent.getLevel()+1);
+  }
 }

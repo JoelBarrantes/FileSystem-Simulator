@@ -38,9 +38,12 @@ public final class CmdParser {
         break;
       
       case "fle": //CREATE FILE
-        
+        String content = "";
         String[] name_ext = args.get(1).split("\\.");
-        String content = args.get(2);
+        if (args.size()>2) {
+          content = args.get(2);
+        }
+        
         this.file_system.FLE(name_ext[0], name_ext[1], content);
         
         break;
@@ -65,7 +68,13 @@ public final class CmdParser {
       
       case "mfle": //MODIFY FILE CONTENT
         
-        //TODO implementation
+        String new_content = "";
+        String[] name_mfle = args.get(1).split("\\.");
+        if (args.size()>2) {
+          new_content = args.get(2);
+        }
+        
+        this.file_system.MFLE(name_mfle[0], name_mfle[1], new_content);
         
         break;
         
@@ -81,11 +90,24 @@ public final class CmdParser {
         this.file_system.VIEW(file_view[0], file_view[1]);
         
         break;
-      case "cpy":
-        
-        //TODO implementation
+      case "cpyrv":
+        String path_rv1 = args.get(1);
+        String path_rv2 = args.get(2);
+        this.file_system.CPYRV(path_rv1, path_rv2);
+        break;
+      case "cpyvr":
+        String[] path_vr1 = args.get(1).split("\\.");
+        String path_vr2 = args.get(2);
+        this.file_system.CPYVR(path_vr1[0], path_vr1[1], path_vr2);
         
         break;
+      case "cpyvv":
+
+        String[] path_vv1 = args.get(1).split("\\.");
+        String path_vv2 = args.get(2);
+        this.file_system.CPYVV(path_vv1[0], path_vv1[1], path_vv2);
+        break;
+      
         
       case "mov":
         try {
@@ -116,6 +138,17 @@ public final class CmdParser {
         this.file_system.TREE(root);
         break;
       case "find":
+        System.out.println("Results: ");
+        Folder root_path = this.file_system.getCurrent_disk().getRoot();
+        try {
+          String[] file_find = args.get(1).split("\\.");
+          this.file_system.FIND(root_path, file_find[0], file_find[1]);
+        
+        } catch (Exception e){
+          String folder_find = args.get(1);
+          this.file_system.FIND(root_path, folder_find, "folder");
+        }
+        System.out.println("");
         break;
 
     }

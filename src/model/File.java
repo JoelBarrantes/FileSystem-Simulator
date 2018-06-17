@@ -23,6 +23,8 @@ public class File {
   private List<Sector> sectors;
   private Folder parent_folder;
   private boolean isValid;
+  private int level;
+  private String path;
   
   public File(String name, String extension, String content, Disk parent_disk, Folder parent_folder ) {
     this.setName(name);
@@ -37,9 +39,11 @@ public class File {
     this.setSectors(new ArrayList<Sector>());
     this.setValid(false);
     int len_bytes = this.writeOnDisk();
-    if (len_bytes > 0) {
+    if (len_bytes >= 0) {
       this.setValid(true);
     }
+    this.updateLevel();
+    this.setPath();
     
   }
   
@@ -165,7 +169,8 @@ public class File {
 
                "Last Modified Date: "+df.format(this.modification_date)+"\n"+
 
-               "Size (In bytes): "+String.valueOf(this.size)+"\n";
+               "Size (In bytes): "+String.valueOf(this.size)+"\n"+
+               "Size on disk (In bytes): "+String.valueOf(this.disk_size)+"\n";
 
     
     
@@ -214,5 +219,30 @@ public class File {
   
   public void updateDate() {
     this.setModification_date(new Date());
+  }
+
+  public int getLevel() {
+    return level;
+  }
+
+  public void setLevel(int level) {
+    this.level = level;
+  }
+  
+  public void updateLevel() {
+    this.setLevel(parent_folder.getLevel()+1);
+  }
+
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath() {
+    if (level > 0) {
+      this.path = this.getParent_folder().getPath() + "/" +this.name+"."+this.extension;
+    } else {
+      this.path = this.name;
+    }
+    
   }
 }
