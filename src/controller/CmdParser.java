@@ -88,6 +88,16 @@ public final class CmdParser {
         break;
         
       case "mov":
+        try {
+          String[] file_mov = args.get(1).split("\\.");
+          String folder_mov = args.get(2);
+          this.file_system.MOV_FILE(file_mov[0], file_mov[1], folder_mov);
+        
+        } catch (Exception e){
+          String folder_src = args.get(1);
+          String folder_dest = args.get(2);
+          this.file_system.MOV_FOLDER(folder_src, folder_dest);
+        }
         break;
       case "rem":
         try {

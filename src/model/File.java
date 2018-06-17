@@ -212,5 +212,7 @@ public class File {
     this.parent_folder = parent_folder;
   }
   
-  
+  public void updateDate() {
+    this.setModification_date(new Date());
+  }
 }

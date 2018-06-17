@@ -19,6 +19,7 @@ public class Folder {
   private Folder parent;
   private String path;
   private Disk parent_disk;
+  private boolean isValid;
   
   
   public Folder(String name, int level, Folder parent, Disk parent_disk) {
@@ -35,16 +36,46 @@ public class Folder {
   }
 
   public void MKDIR(String name) {
-    this.folders.add(new Folder(name, this.level+1 ,this, this.getParent_disk()));
+    
+    Scanner reader = new Scanner(System.in);
+    Folder folder = new Folder(name, this.level+1 ,this, this.getParent_disk()); 
+    Folder collision = checkFolderCollision(folder);
+    
+    if(collision != null) {
+      System.out.println("Folder already exists. Do you want to merge it with this folder? Y/N");
+      String cmd = reader.nextLine();
+      if(cmd.toLowerCase().equals("y")) {
+        this.MERGE(collision, folder);
+        System.out.println("Folder created.");
+      } else {
+        System.out.println("File couldn't be created.");
+      }     
+    } else {
+      this.folders.add(folder);
+      System.out.println("Folder created.");
+    }
   }
   
+  private void MERGE(Folder destination, Folder source) {
+    for(File file : source.getFiles()) {
+      file.setParent_folder(destination);
+      file.setParent_disk(destination.getParent_disk());
+      destination.getFiles().add(file);
+    }
+    for(Folder folder : source.getFolders()) {
+      folder.setParent(destination);
+      folder.setParent_disk(destination.getParent_disk());
+      destination.getFolders().add(folder);
+    }
+    source = null;
+  }
+
   public void FLE(String file_name, String extension, String content) {
     
     Scanner reader = new Scanner(System.in);
-
     File new_file = new File(file_name, extension, content, parent_disk, this);
     if(new_file.isValid()){
-      if(checkCollision(new_file)) {
+      if(checkFileCollision(new_file)) {
         System.out.println("Filename already exists. Do you want to replace it? Y/N");
         String cmd = reader.nextLine();
         if(cmd.toLowerCase().equals("y")) {
@@ -64,13 +95,22 @@ public class Folder {
     }
   }
   
-  private boolean checkCollision(File new_file) {
+  public boolean checkFileCollision(File new_file) {
     for (File file : this.files) {
       if(file.getName().equals(new_file.getName()) && file.getExtension().equals(new_file.getExtension())) {
         return true;
       }
     }
     return false;
+  }
+  
+  public Folder checkFolderCollision(Folder new_folder) {
+    for (Folder folder : this.folders) {
+      if(folder.getName().equals(new_folder.getName())) {
+        return folder;
+      }
+    }
+    return null;
   }
 
   public String PPT(String file_name, String file_extension) {
@@ -228,5 +268,16 @@ public class Folder {
     this.parent_disk = parent_disk;
   }
 
+  public boolean isValid() {
+    return isValid;
+  }
+
+  public void setValid(boolean isValid) {
+    this.isValid = isValid;
+  }
+
+  public void updateDate() {
+    this.setModification_date(new Date());
+  }
 
 }

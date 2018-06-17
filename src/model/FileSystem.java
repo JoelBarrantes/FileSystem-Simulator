@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 
 public class FileSystem {
@@ -52,18 +53,29 @@ public class FileSystem {
   }
   
   public void CHDIR(String name) {
-    if (name.equals("..")) {
+    String[] paths = name.split("/", 2);
+    String folder_name = paths[0];
+    
+    
+    if (folder_name.equals("..")) {
       if (current_folder.getLevel() > 0) {
         this.current_folder = current_folder.getParent();
       }
     } else {
-      if (current_folder.findFolder(name) != null) {
-        this.current_folder = current_folder.findFolder(name);
+      if (current_folder.findFolder(folder_name) != null) {
+        this.current_folder = current_folder.findFolder(folder_name);
       } else {
         System.out.println("Folder doesn't exists.");
       }
     }
+    if (paths.length>1) {
+      String next_folder = paths[1];
+      if (!next_folder.equals("")) {
+        CHDIR(next_folder);
+      }
+    }
     
+  
   }
   
   public void LDIR() {
@@ -107,5 +119,65 @@ public class FileSystem {
   public void setCurrent_disk(Disk current_disk) {
     this.current_disk = current_disk;
   }
+
+  public void MOV_FILE(String file_name, String file_extension, String folder_mov) {
+    
+    File file = findFile(file_name, file_extension, this.getCurrent_folder());
+    Scanner reader = new Scanner(System.in);
+    
+    if(file!=null) {
+      this.CHDIR(folder_mov);
+      
+      System.out.println("Filename already exists. Do you want to replace it? Y/N");
+      String cmd = reader.nextLine();
+      if(cmd.toLowerCase().equals("y")) {
+        
+        this.getCurrent_folder().REM(file_name, file_extension, this.getCurrent_folder());
+        this.getCurrent_folder().getFiles().add(file);
+
+        file.setParent_folder(this.getCurrent_folder());
+        file.updateDate();
+        
+        System.out.println("File created.");
+      
+      } else {
+        System.out.println("File couldn't be created.");
+      }      
+    }
+  }
+  
+  public void MOV_FOLDER(String folder_src, String folder_dest) {
+    Folder folder = findFolder(folder_src, this.getCurrent_folder());
+    if(folder!=null) {
+      this.getCurrent_folder().getFolders().remove(folder);
+      this.CHDIR(folder_dest);
+      this.getCurrent_folder().getFolders().add(folder);
+      folder.setParent(this.getCurrent_folder());
+      folder.setPath();
+      folder.updateDate();
+    
+    }
+  
+    
+  }
+  
+  private Folder findFolder(String folder_src, Folder parent) {
+    for(Folder folder : parent.getFolders()) {
+      if(folder.getName().equals(folder_src)) {
+        return folder;
+      }
+    }
+    return null;
+  }
+
+  public File findFile(String file_name, String file_extension, Folder folder) {
+    for(File file : folder.getFiles()) {
+      if(file.getName().equals(file_name) && file.getExtension().equals(file_extension)) {
+        return file;
+      }
+    }
+    return null;
+  }
+
 
 }
