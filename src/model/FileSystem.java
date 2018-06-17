@@ -61,6 +61,9 @@ public class FileSystem {
         this.setCurrent_folder(this.current_disk.getRoot());
         
         String[] paths_abs = name.split(":/", 2);
+        if (paths_abs.length <= 1) {
+          return;
+        }
         String toSplit = paths_abs[1];
         paths = toSplit.split("/",2);
         folder_name = paths[0];
@@ -68,7 +71,7 @@ public class FileSystem {
       else {
         
         System.out.println("Path doesn't exists.");
-        System.exit(1);
+        return;
       }
       
     }
@@ -140,7 +143,7 @@ public class FileSystem {
     this.current_disk = current_disk;
   }
 
-  public void MOV_FILE(String file_name, String file_extension, String folder_mov) {
+  public void MOV_FILE(String file_name, String file_extension, String folder_mov, String new_file_name, String new_extension) {
     
     File file = findFile(file_name, file_extension, this.getCurrent_folder());
     Scanner reader = new Scanner(System.in);
@@ -148,29 +151,40 @@ public class FileSystem {
     if(file!=null) {
       String abs_path = this.getCurrent_folder().getPath();
       this.CHDIR(folder_mov);
-      if(this.getCurrent_folder().checkFileCollision(file)) {
+      
+      String prev_name = file.getName();
+      String prev_ext = file.getExtension();
+      File collision = this.findFile(new_file_name, new_extension, this.getCurrent_folder());
+      file.setName(new_file_name);
+      file.setExtension(new_extension);
+      if(collision!=null) {
         System.out.println("Filename already exists. Do you want to replace it? Y/N");
         String cmd = reader.nextLine();
         if(cmd.toLowerCase().equals("y")) {
           
-          this.getCurrent_folder().REM(file_name, file_extension, this.getCurrent_folder());
+          if(!abs_path.equals(getCurrent_folder().getPath())) {
+            this.getCurrent_folder().REM(new_file_name, new_extension, this.getCurrent_folder());
+          }
+          
           this.getCurrent_folder().getFiles().add(file);
   
           file.setParent_folder(this.getCurrent_folder());
           file.updateDate();
           
-          System.out.println("File created.");
+          System.out.println("File moved.");
           this.CHDIR(abs_path);
           this.getCurrent_folder().getFiles().remove(file);
         
         } else {
+          file.setName(prev_name);
+          file.setExtension(prev_ext);
           System.out.println("File couldn't be created.");
         }      
       } else {
         this.getCurrent_folder().getFiles().add(file);        
         file.setParent_folder(this.getCurrent_folder());
         file.updateDate();
-        System.out.println("File created.");
+        System.out.println("File moved.");
         this.CHDIR(abs_path);
         this.getCurrent_folder().getFiles().remove(file);
       }
@@ -179,42 +193,54 @@ public class FileSystem {
     }
   }
   
-  public void MOV_FOLDER(String folder_src, String folder_dest) {
+  public void MOV_FOLDER(String folder_src, String folder_dest, String new_name) {
+    
     Folder folder = findFolder(folder_src, this.getCurrent_folder());
+    Scanner reader = new Scanner(System.in);
+    
     if(folder!=null) { 
       String abs_path = this.getCurrent_folder().getPath();
       this.CHDIR(folder_dest);
-      Folder collision = this.getCurrent_folder().checkFolderCollision(folder);
+      
+      String prev_name = folder.getName();
+      Folder collision = this.findFolder(new_name, this.getCurrent_folder());
+      folder.setName(new_name);
       if( collision != null) {
-        System.out.println("Filename already exists. Do you want to replace it? Y/N");
+        System.out.println("Folder already exists. Do you want to replace it? Y/N");
         String cmd = reader.nextLine();
         if(cmd.toLowerCase().equals("y")) {
           
-          this.getCurrent_folder().REM(file_name, file_extension, this.getCurrent_folder());
-          this.getCurrent_folder().getFiles().add(file);
+          if(!abs_path.equals(getCurrent_folder().getPath())) {
+            this.REM(new_name, "folder");
+          }
+          this.getCurrent_folder().getFolders().add(folder);
   
-          file.setParent_folder(this.getCurrent_folder());
-          file.updateDate();
           
-          System.out.println("File created.");
+          folder.setParent(this.getCurrent_folder());
+          folder.setPath();
+          folder.updateDate();
+          
+          System.out.println("Folder moved.");
           this.CHDIR(abs_path);
-          this.getCurrent_folder().getFiles().remove(file);
-        
+          this.getCurrent_folder().getFolders().remove(folder);
+              
+         
+          
         } else {
-          System.out.println("File couldn't be created.");
+          folder.setName(prev_name);
+          System.out.println("Folder couldn't be moved.");
         }      
       } else {
         this.getCurrent_folder().getFolders().add(folder);
         folder.setParent(this.getCurrent_folder());
         folder.setPath();
         folder.updateDate();
-        System.out.println("Folder created.");
+        System.out.println("Folder moved.");
         this.CHDIR(abs_path);
-        this.getCurrent_folder().getFiles().remove(folder);
+        this.getCurrent_folder().getFolders().remove(folder);
       }
+      this.CHDIR(abs_path);
     }
-  
-    
   }
   
   private Folder findFolder(String folder_src, Folder parent) {
