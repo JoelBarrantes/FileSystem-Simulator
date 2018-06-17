@@ -110,6 +110,8 @@ public final class CmdParser {
         }
         break;
       case "tree":
+        Folder root = this.file_system.getCurrent_disk().getRoot();
+        this.file_system.TREE(root);
         break;
       case "find":
         break;
