@@ -25,6 +25,7 @@ public final class CmdParser {
     List<String> args = splitCommand(command);
     String cmd = args.get(0);
     
+    try {
     switch (cmd.toLowerCase()) {
       case "crt": //CREATE VIRTUAL DISK
         
@@ -152,10 +153,18 @@ public final class CmdParser {
         break;
 
     }
+    } catch(Exception E){
+      System.out.println("Invalid command");
+    }
+    if(init) {
     this.current_folder = file_system.getCurrent_folder().getPath();
     this.file_system.getCurrent_disk().updateDisk();
-    System.out.println(this.current_folder);
-  }
+    System.out.print(this.current_folder+">");
+    }
+    else {
+      System.out.print("? - ");
+    }
+    }
   
   public static List<String> splitCommand(String command){
     List<String> args = new ArrayList<String>();
